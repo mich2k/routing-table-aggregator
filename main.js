@@ -23,11 +23,12 @@ function decToBin(ip) {
   return ipList;
 }
 
-function fillList(params) {
-  params[0] = [];
+function fillList(param) {
+  param = [];
   for (let i = 1; i <= recordNo; ++i) {
-    params[0].push({ id: i, ip: $("#ip-" + i).val(), nm_cidr: $("#cidr-" + i).val(), next_hop: $("#nh-" + i).val() });
+    param.push({ id: i, ip: $("#ip-" + i).val(), nm_cidr: $("#cidr-" + i).val(), next_hop: $("#nh-" + i).val() });
   }
+  return param;
 }
 
 function isInputValid() {
@@ -41,8 +42,7 @@ function isInputValid() {
     return false;
   }
 
-  fillList(tmpDicArr);
-  tmpDicArr = tmpDicArr[0];
+  tmpDicArr = fillList();
 
   for (let i = 0; i < tmpDicArr.length; i++) {
     let curr_ip = tmpDicArr[i].ip,
@@ -181,8 +181,7 @@ $(function () {
       console.dir(e);
     }
     crossCheckIntegrityListLen();
-    fillList(inputDicList);
-    inputDicList = inputDicList[0];
+    inputDicList=fillList();
     console.log(inputDicList);
     mainCalculate();
   });
