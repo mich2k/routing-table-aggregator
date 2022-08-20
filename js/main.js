@@ -70,7 +70,11 @@ function isInputValid() {
 }
 
 function addRecord() {
+  console.log("before before:" + recordNo);
+
   crossCheckIntegrityListLen();
+  console.log("before:" + recordNo);
+
   recordNo++;
   rt_markup =
     `
@@ -99,6 +103,7 @@ function addRecord() {
   tableBody = $("#routing-table-body");
   tableBody.append(rt_markup);
   recordNo = $(".t-row").length;
+  console.log("after:" + recordNo);
 }
 
 function delRecord() {
@@ -108,6 +113,7 @@ function delRecord() {
     return;
   }
   $("#routing-table tr:last").remove();
+  recordNo--;
   crossCheckIntegrityListLen();
 }
 
@@ -182,7 +188,7 @@ $(function () {
       console.dir(e);
     }
     crossCheckIntegrityListLen();
-    inputDicList=fillList();
+    inputDicList = fillList();
     console.log(inputDicList);
     mainCalculate();
   });
