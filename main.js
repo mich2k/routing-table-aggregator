@@ -31,7 +31,6 @@ function fillList(params) {
 }
 
 function isInputValid() {
-  //alert("To-Do");
   // N rules Validation > 1
   crossCheckIntegrityListLen();
 
@@ -111,10 +110,9 @@ function delRecord() {
   crossCheckIntegrityListLen();
 }
 
-function cidrToBinaryBitmask(cidr, format) {
+function cidrToBinaryBitmask(cidr) {
   const bits = 32;
   let mask = "";
-  var bitmask = "11111111111111111111111111111111";
   for (let j = 0; j < cidr; j++) {
     mask += "1";
   }
@@ -133,7 +131,7 @@ function mainCalculate() {
       binDicList.push({
         id: i + 1,
         bin_ip: binIp,
-        bin_nm: cidrToBinaryBitmask(inputDicList[i].nm_cidr, "string"),
+        bin_nm: cidrToBinaryBitmask(inputDicList[i].nm_cidr),
         next_hop: inputDicList[i].next_hop,
       });
     }
