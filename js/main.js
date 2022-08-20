@@ -70,6 +70,7 @@ function isInputValid() {
 }
 
 function addRecord() {
+  crossCheckIntegrityListLen();
   recordNo++;
   rt_markup =
     `
