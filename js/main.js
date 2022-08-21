@@ -70,10 +70,7 @@ function isInputValid() {
 }
 
 function addRecord() {
-  console.log("before before:" + recordNo);
-
   crossCheckIntegrityListLen();
-  console.log("before:" + recordNo);
 
   recordNo++;
   rt_markup =
@@ -103,7 +100,6 @@ function addRecord() {
   tableBody = $("#routing-table-body");
   tableBody.append(rt_markup);
   recordNo = $(".t-row").length;
-  console.log("after:" + recordNo);
 }
 
 function delRecord() {
@@ -118,15 +114,9 @@ function delRecord() {
 }
 
 function cidrToBinaryBitmask(cidr) {
-  const bits = 32;
-  let mask = "";
-  for (let j = 0; j < cidr; j++) {
-    mask += "1";
-  }
-  for (let j = mask.length; j < bits; j++) {
-    mask += "0";
-  }
-  return mask;
+  let mask = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
+  for (let j = 0; j < cidr; j++) mask[j] = "1";
+  return mask.join("");
 }
 
 function mainCalculate() {
@@ -163,6 +153,8 @@ function mainCalculate() {
     console.dir(JSON.stringify(cmnHopsGroupedBy));
   }
 
+
+
   buildBinDictionary();
 
   commonNextHop();
@@ -172,13 +164,13 @@ function mainCalculate() {
 
 $(function () {
   addRecord();
-  $("#add-record-btn").on("click touchstart", function () {
+  $("#add-record-btn").on("click", function () {
     addRecord();
   });
-  $("#del-record-btn").on("click touchstart", function () {
+  $("#del-record-btn").on("click", function () {
     delRecord();
   });
-  $("#submit-btn").on("click touchstart", function () {
+  $("#submit-btn").on("click", function () {
     try {
       /*if(!isInputValid()){
         console.log("Invalid input.");
