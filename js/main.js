@@ -122,7 +122,9 @@ function cidrToBinaryBitmask(cidr) {
 function mainCalculate() {
   crossCheckIntegrityListLen();
   let binDicList = [];
+
   function buildBinDictionary() {
+    // abstract this
     for (let i = 0; i < recordNo; i++) {
       let binIp = decToBin(inputDicList[i].ip);
       binDicList.push({
@@ -135,8 +137,13 @@ function mainCalculate() {
   }
 
   function commonNextHop() {
+    /*
+    JSON structure: {key: [values], key: [values]}
+    where key is the next hop address and 
+    values are all the IDs of IPs that match that next hop address
+    */
     crossCheckIntegrityListLen();
-    const cmnHopsGroupedBy = {}; // JSON structure: {nh: [], nh1: []}
+    let cmnHopsGroupedBy = {};
     let nextHop;
     for (let i = 0; i < recordNo; i++) {
       nextHop = inputDicList[i].next_hop;
@@ -150,16 +157,31 @@ function mainCalculate() {
       }
       cmnHopsGroupedBy[nextHop].push(i);
     }
-    console.dir(JSON.stringify(cmnHopsGroupedBy));
+    return cmnHopsGroupedBy;
   }
 
-
+  function supernetCalculator() {
+    // Object.values(dic)[0]
+    // Object.keys(dic)[0]
+    const keys = Object.keys(cmnHops);
+    const n_common_hops_found = keys.length;
+    let outDicList = [];
+    console.log(n_common_hops_found);
+    for (let i = 0; i < n_common_hops_found; i++) {
+      for (let j = 0; j < cmnHops[keys[i]].length; j++) {
+        outDicList[j] = binDicList[cmnHops[keys[i]][j]];
+        console.log(i + "," + j + +":" + JSON.stringify(outDicList[j]));
+      }
+    }
+  }
 
   buildBinDictionary();
 
-  commonNextHop();
+  let cmnHops = commonNextHop();
 
-  console.dir(binDicList);
+  supernetCalculator();
+
+  console.dir(JSON.stringify(cmnHops));
 }
 
 $(function () {
