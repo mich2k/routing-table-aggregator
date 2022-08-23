@@ -12,8 +12,6 @@ function crossCheckIntegrityListLen() {
       };
 }
 
-function checkClass(ip) {}
-
 function decToBin(ip) {
   let ipList = ip.split(".");
   ipList = ipList.map((oct) => {
@@ -119,7 +117,45 @@ function cidrToBinaryBitmask(cidr) {
   return mask.join("");
 }
 
+function binToDec(ip) {
+  // ip = [11111111,11111111,11111111,11111111]
+  ip = ip.map((oct) => {
+    return parseInt(oct, 2).toString(10);
+  });
+  return ip;
+}
+
 function mainCalculate() {
+  function addResRecord() {
+    crossCheckIntegrityListLen();
+    rt_markup =
+      `
+    <tr id="res-row-` +
+      recordNo +
+      `>
+    <th " class="t-row" scope="row">` +
+      recordNo +
+      `</th>
+      <td> ` +
+      recordNo +
+      ` </td>
+    <td>
+    <input class="form-control" type="text" placeholder="` +
+      resOutDecIp +
+      `" readonly="">
+      </td>
+    <td>
+        / <input class="col-2" maxlength="2" type="text" name="" id="res-cidr-` +
+      recordNo +
+      `" readonly>
+    </td>
+  </tr>
+    `;
+    tableBody = $("#res-table-body");
+    tableBody.append(rt_markup);
+    // recordNo = $(".t-row").length;
+  }
+
   crossCheckIntegrityListLen();
   let binDicList = [];
 
@@ -168,10 +204,23 @@ function mainCalculate() {
     let outDicList = [];
     console.log(n_common_hops_found);
     for (let i = 0; i < n_common_hops_found; i++) {
+      let resOutBinIp = []; // resultant IP address, split in 8 bits in 4 groups/octets
       for (let j = 0; j < cmnHops[keys[i]].length; j++) {
         outDicList[j] = binDicList[cmnHops[keys[i]][j]];
-        console.log(i + "," + j + +":" + JSON.stringify(outDicList[j]));
+        console.log(i + "," + j + ":  " + JSON.stringify(outDicList[j]));
+        if (j == 0) {
+          resOutBinIp = outDicList[j].bin_ip;
+          continue;
+        }
+        for (let k = 0; k < 4; k++) {
+          // one each octet
+          resOutBinIp[k] &= outDicList[j].bin_ip[k];
+        }
       }
+      // console.log(i + " " + resOutBinIp);
+      resOutDecIp = binToDec(resOutBinIp);
+      resOutDecIp = resOutDecIp.join('.');
+      addResRecord(resOutDecIp);
     }
   }
 
@@ -181,7 +230,7 @@ function mainCalculate() {
 
   supernetCalculator();
 
-  console.dir(JSON.stringify(cmnHops));
+  // console.dir(JSON.stringify(cmnHops));
 }
 
 $(function () {
