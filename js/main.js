@@ -12,8 +12,8 @@ function crossCheckIntegrityListLen() {
       };
 }
 
-function decToBin(ip) {
-  let ipList = ip.split(".");
+function decToBin(dec_ip) {
+  let ipList = dec_ip.split(".");
   ipList = ipList.map((oct) => {
     let bin = parseInt(oct).toString(2);
     return "00000000".substring(bin.length) + bin; // padding with zeros
@@ -86,7 +86,7 @@ function addRecord() {
     recordNo +
     `" /></td>
   <td>
-      / <input class="col-2" maxlength="2" type="text" name="" id="cidr-` +
+      / <input class="col-3" maxlength="2" type="text" name="" id="cidr-` +
     recordNo +
     `" />
   </td>
@@ -126,33 +126,32 @@ function binToDec(ip) {
 }
 
 function mainCalculate() {
-  function addResRecord() {
-    crossCheckIntegrityListLen();
-    rt_markup =
+  function addResRecord(decDottedIp, resSubnetmask) {
+    res_rt_markup =
       `
     <tr id="res-row-` +
       recordNo +
       `>
-    <th " class="t-row" scope="row">` +
+    <th class="t-row" scope="row">` +
       recordNo +
       `</th>
       <td> ` +
       recordNo +
       ` </td>
     <td>
-    <input class="form-control" type="text" placeholder="` +
-      resOutDecIp +
+    <input type="text" placeholder="` +
+      decDottedIp +
       `" readonly="">
-      </td>
+      </td>"
     <td>
-        / <input class="col-2" maxlength="2" type="text" name="" id="res-cidr-` +
-      recordNo +
-      `" readonly>
+      / <input class="col-2" type="text" placeholder="` +
+      resSubnetmask +
+      `" readonly="">
     </td>
   </tr>
     `;
     tableBody = $("#res-table-body");
-    tableBody.append(rt_markup);
+    tableBody.append(res_rt_markup);
     // recordNo = $(".t-row").length;
   }
 
@@ -201,30 +200,31 @@ function mainCalculate() {
     // Object.keys(dic)[0]
     const keys = Object.keys(cmnHops);
     const n_common_hops_found = keys.length;
-    let outDicList = [];
+    let outDicList = [],
+      resSm = "";
     console.log(n_common_hops_found);
     for (let i = 0; i < n_common_hops_found; i++) {
-      let resOutBinIp = []; // resultant IP address, split in 8 bits in 4 groups/octets
+      let resOutIp = []; // resultant IP address, split in 8 bits in 4 groups/octets
       for (let j = 0; j < cmnHops[keys[i]].length; j++) {
         outDicList[j] = binDicList[cmnHops[keys[i]][j]];
         console.log(i + "," + j + ":  " + JSON.stringify(outDicList[j]));
         if (j == 0) {
-          resOutBinIp = outDicList[j].bin_ip;
+          resOutIp = binToDec(outDicList[j].bin_ip)  ;
           continue;
         }
         for (let k = 0; k < 4; k++) {
           // one each octet
-          resOutBinIp[k] &= outDicList[j].bin_ip[k];
+          resOutIp[k] &= parseInt(outDicList[j].bin_ip[k], 2).toString(10);
         }
       }
       // console.log(i + " " + resOutBinIp);
-      resOutDecIp = binToDec(resOutBinIp);
 
-      if (resOutDecIp.length != 0) {
+      if (resOutIp.length != 0) {
         $("#res-table").show();
       }
+      resSm == "" ? "?" : resSm;
 
-      addResRecord(resOutDecIp.join("."));
+      addResRecord(resOutIp.join("."), resSm);
     }
   }
 
@@ -257,7 +257,9 @@ $(function () {
     }
     crossCheckIntegrityListLen();
     inputDicList = fillList();
-    console.log(inputDicList);
+    // console.log(inputDicList);
+    $("#res-table").hide();
+    $("#res-table > tbody").empty();
     mainCalculate();
   });
 });
