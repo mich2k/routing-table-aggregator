@@ -219,8 +219,12 @@ function mainCalculate() {
       }
       // console.log(i + " " + resOutBinIp);
       resOutDecIp = binToDec(resOutBinIp);
-      resOutDecIp = resOutDecIp.join('.');
-      addResRecord(resOutDecIp);
+
+      if (resOutDecIp.length != 0) {
+        $("#res-table").show();
+      }
+
+      addResRecord(resOutDecIp.join("."));
     }
   }
 
@@ -234,6 +238,7 @@ function mainCalculate() {
 }
 
 $(function () {
+  $("#res-table").hide();
   addRecord();
   $("#add-record-btn").on("click", function () {
     addRecord();
