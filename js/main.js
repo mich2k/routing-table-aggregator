@@ -13,6 +13,10 @@ function crossCheckIntegrityListLen() {
 }
 
 function decToBin(dec_ip) {
+  if (!dec_ip.includes(".")) {
+    let oct_bin = parseInt(dec_ip).toString(2);
+    return "00000000".substring(oct_bin.length) + oct_bin;
+  }
   let ipList = dec_ip.split(".");
   ipList = ipList.map((oct) => {
     let bin = parseInt(oct).toString(2);
@@ -195,42 +199,68 @@ function mainCalculate() {
     return cmnHopsGroupedBy;
   }
 
+  function cidrMapCalc() {
+    let cidr_map = {};
+    const keys = Object.keys(cmnHops);
+    const n_common_hops_found = keys.length;
+    for (let i = 0; i < n_common_hops_found; i++) {
+      let ips = [];
+      for (let j = 0; j < cmnHops[keys[i]].length; j++) {
+        ips[j] = binDicList[cmnHops[keys[i]][j]].bin_ip.join("");
+      }
+
+      for (let j = 1; j < ips[j].length; j++) { // fixing a j and scrolling vertically
+        for (let c = 0; c < ips[0].length; c++) {
+          if (ips[0][c] != ips[j][c]) return cidr_map;
+          if (i in cidr_map) {
+            cidr_map[i]++;
+          } else {
+            cidr_map[i] = 1;
+          }
+        }
+      }
+    }
+  }
+
   function supernetCalculator() {
     // Object.values(dic)[0]
     // Object.keys(dic)[0]
     const keys = Object.keys(cmnHops);
     const n_common_hops_found = keys.length;
     let outDicList = [],
-      resSm = "";
+      resSm = 0;
     console.log(n_common_hops_found);
+
     for (let i = 0; i < n_common_hops_found; i++) {
       let resOutIp = []; // resultant IP address, split in 8 bits in 4 groups/octets
       for (let j = 0; j < cmnHops[keys[i]].length; j++) {
         outDicList[j] = binDicList[cmnHops[keys[i]][j]];
         console.log(i + "," + j + ":  " + JSON.stringify(outDicList[j]));
         if (j == 0) {
-          resOutIp = binToDec(outDicList[j].bin_ip)  ;
+          resOutIp = binToDec(outDicList[j].bin_ip);
           continue;
         }
         for (let k = 0; k < 4; k++) {
           // one each octet
           resOutIp[k] &= parseInt(outDicList[j].bin_ip[k], 2).toString(10);
         }
-      }
-      // console.log(i + " " + resOutBinIp);
+        // console.log(i + " " + resOutBinIp);
 
-      if (resOutIp.length != 0) {
-        $("#res-table").show();
-      }
-      resSm == "" ? "?" : resSm;
+        if (resOutIp.length != 0) {
+          $("#res-table").show();
+        }
+        resSm = resSm == 0 ? "?" : resSm;
 
-      addResRecord(resOutIp.join("."), resSm);
+        addResRecord(resOutIp.join("."), cidrMap[i]);
+      }
     }
   }
 
   buildBinDictionary();
 
   let cmnHops = commonNextHop();
+
+  let cidrMap = cidrMapCalc();
 
   supernetCalculator();
 
