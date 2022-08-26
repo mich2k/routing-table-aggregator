@@ -209,7 +209,8 @@ function mainCalculate() {
         ips[j] = binDicList[cmnHops[keys[i]][j]].bin_ip.join("");
       }
 
-      for (let j = 1; j < ips[j].length; j++) { // fixing a j and scrolling vertically
+      for (let j = 1; j < ips[j].length; j++) {
+        // fixing a j and scrolling vertically
         for (let c = 0; c < ips[0].length; c++) {
           if (ips[0][c] != ips[j][c]) return cidr_map;
           if (i in cidr_map) {
@@ -267,15 +268,27 @@ function mainCalculate() {
   // console.dir(JSON.stringify(cmnHops));
 }
 
+function resetPage() {
+  window.location.reload();
+}
+
 $(function () {
+
   $("#res-table").hide();
   addRecord();
+
   $("#add-record-btn").on("click", function () {
     addRecord();
   });
+
   $("#del-record-btn").on("click", function () {
     delRecord();
   });
+
+  $("#reset-btn").on("click", function () {
+    resetPage();
+  });
+
   $("#submit-btn").on("click", function () {
     try {
       /*if(!isInputValid()){
@@ -285,6 +298,7 @@ $(function () {
       alert("Undefined error");
       console.dir(e);
     }
+    $("#del-record-btn").hide();
     crossCheckIntegrityListLen();
     inputDicList = fillList();
     // console.log(inputDicList);
