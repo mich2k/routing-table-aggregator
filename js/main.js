@@ -208,19 +208,23 @@ function mainCalculate() {
       for (let j = 0; j < cmnHops[keys[i]].length; j++) {
         ips[j] = binDicList[cmnHops[keys[i]][j]].bin_ip.join("");
       }
-
-      for (let j = 1; j < ips[j].length; j++) {
-        // fixing a j and scrolling vertically
-        for (let c = 0; c < ips[0].length; c++) {
-          if (ips[0][c] != ips[j][c]) return cidr_map;
-          if (i in cidr_map) {
-            cidr_map[i]++;
-          } else {
-            cidr_map[i] = 1;
+      for (let c = 0; c < ips[0].length; c++) {
+        let evenCheck = true;
+        for (let j = 1; j < ips.length; j++) {
+          // fixing a j and scrolling vertically
+          if (cidr_map[i] > 32) console.error("cidrMapCalc: we broke something over here! // " + cidr_map[i]);
+          if (ips[0][c] != ips[j][c]) {
+            return cidr_map;
           }
+        }
+        if (i in cidr_map) {
+          cidr_map[i]++;
+        } else {
+          cidr_map[i] = 1;
         }
       }
     }
+    return cidr_map;
   }
 
   function supernetCalculator() {
@@ -228,9 +232,7 @@ function mainCalculate() {
     // Object.keys(dic)[0]
     const keys = Object.keys(cmnHops);
     const n_common_hops_found = keys.length;
-    let outDicList = [],
-      resSm = 0;
-    console.log(n_common_hops_found);
+    let outDicList = [];
 
     for (let i = 0; i < n_common_hops_found; i++) {
       let resOutIp = []; // resultant IP address, split in 8 bits in 4 groups/octets
@@ -250,10 +252,8 @@ function mainCalculate() {
         if (resOutIp.length != 0) {
           $("#res-table").show();
         }
-        resSm = resSm == 0 ? "?" : resSm;
-
-        addResRecord(resOutIp.join("."), cidrMap[i]);
       }
+      addResRecord(resOutIp.join("."), cidrMap[i]);
     }
   }
 
@@ -272,12 +272,16 @@ function resetPage() {
   window.location.reload();
 }
 
-$(function () {
+function clearTable() {
+  $("#res-table > tbody").empty();
+}
 
+$(function () {
   $("#res-table").hide();
   addRecord();
 
   $("#add-record-btn").on("click", function () {
+    clearTable();
     addRecord();
   });
 
@@ -303,7 +307,7 @@ $(function () {
     inputDicList = fillList();
     // console.log(inputDicList);
     $("#res-table").hide();
-    $("#res-table > tbody").empty();
+    clearTable();
     mainCalculate();
   });
 });
