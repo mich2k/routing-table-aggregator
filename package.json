@@ -16,8 +16,8 @@
     "webpack-dev-server": "^4.10.0"
   },
   "version": "1.0.0",
-  "description": "My webpack project",
-  "name": "my-webpack-project",
+  "description": "Routing table aggregator",
+  "name": "routing-table-aggregator",
   "scripts": {
     "build": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
