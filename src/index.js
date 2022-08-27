@@ -66,6 +66,13 @@ function isInputValid() {
 
   // IP Validation
   // SM Validation
+  for (let i = 0; i < tmpDicArr.length; i++) {
+    if (tmpDicArr[i].nm_cidr < 0 || tmpDicArr[i].nm_cidr > 32) {
+      alert("sm CIDR must be lower than 32 and greater than 0");
+      return false;
+    }
+  }
+
   // NH Validation
   // N rules with same hop Validation
   return true;
@@ -247,7 +254,6 @@ function mainCalculate() {
           // one each octet
           resOutIp[k] &= parseInt(outDicList[j].bin_ip[k], 2).toString(10);
         }
-        // console.log(i + " " + resOutBinIp);
 
         if (resOutIp.length != 0) {
           $("#res-table").show();
@@ -272,7 +278,7 @@ function resetPage() {
   window.location.reload();
 }
 
-function clearTable() {
+function clearResTable() {
   $("#res-table > tbody").empty();
 }
 
@@ -281,7 +287,7 @@ $(function () {
   addRecord();
 
   $("#add-record-btn").on("click", function () {
-    clearTable();
+    clearResTable();
     addRecord();
   });
 
@@ -294,20 +300,18 @@ $(function () {
   });
 
   $("#submit-btn").on("click", function () {
-    try {
-      /*if(!isInputValid()){
-        console.log("Invalid input.");
-      } // TO-DO*/
-    } catch (e) {
-      alert("Undefined error");
-      console.dir(e);
+    let inputCheck = isInputValid();
+    if (!inputCheck) {
+      console.error("Invalid input.");
+      return;
+    } else {
+      $("#del-record-btn").hide();
+      crossCheckIntegrityListLen();
+      inputDicList = fillList();
+
+      $("#res-table").hide();
+      clearResTable();
+      mainCalculate();
     }
-    $("#del-record-btn").hide();
-    crossCheckIntegrityListLen();
-    inputDicList = fillList();
-    // console.log(inputDicList);
-    $("#res-table").hide();
-    clearTable();
-    mainCalculate();
   });
 });
