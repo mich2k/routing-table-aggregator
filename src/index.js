@@ -60,7 +60,7 @@ function isInputValid() {
     let is_any_null = curr_ip == "" ? true : curr_nm_cidr == "" ? true : curr_next_hop == "" ? true : false;
     if (is_any_null) {
       alert("No empty fields allowed.");
-      return is_any_null;
+      return !is_any_null;
     }
   }
 
