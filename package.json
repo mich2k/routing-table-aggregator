@@ -1,23 +1,27 @@
 {
   "dependencies": {
+    "@types/jquery": "^3.5.14",
     "eslint": "^8.23.0",
+    "eslint-webpack-plugin": "^3.2.0",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.13",
-    "@babel/preset-env": "^7.18.10",
+    "@typescript-eslint/eslint-plugin": "^5.36.1",
+    "@typescript-eslint/parser": "^5.36.1",
     "@webpack-cli/generators": "^2.5.0",
-    "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
     "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.6.1",
     "prettier": "^2.7.1",
     "style-loader": "^3.3.1",
-    "webpack-dev-server": "^4.10.0"
+    "ts-loader": "^9.3.1",
+    "typescript": "^4.8.2",
+    "webpack-dev-server": "^4.10.1"
   },
   "version": "1.0.0",
-  "description": "Routing table aggregator",
-  "name": "routing-table-aggregator",
+  "description": "My webpack project",
+  "name": "my-webpack-project",
   "scripts": {
     "build": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
