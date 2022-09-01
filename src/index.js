@@ -230,6 +230,7 @@ function mainCalculate() {
           cidr_map[i] = 1;
         }
       }
+      cidr_map[i] = cidr_map[i] == "" ? 0 : cidr_map[i]; // edge cases
     }
     return cidr_map;
   }
